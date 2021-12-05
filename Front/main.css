@@ -1,0 +1,15 @@
+.header {
+    height: 10%;
+}
+
+.content {
+    height: 90%;
+}
+
+.listBox {
+    max-height: 75%;
+}
+
+/* ::-webkit-scrollbar {
+    display: none;
+} */
