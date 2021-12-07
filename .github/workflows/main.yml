@@ -21,13 +21,14 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          run: cd ./Back/
         env:
           CI: true
       - name: zip
-        uses: montudor/action-zip@v0.1.0          
-        with:
-          args: zip -q -j ../bundle.zip ./*
+        uses: montudor/action-zip@v0.1.0
+      - name: zip output
+        run: |
+          zip -qq -j ../bundle.zip ./*
+        working-directory: ./Back/
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
