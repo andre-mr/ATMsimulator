@@ -7,13 +7,11 @@ jobs:
       matrix:
         node-version: [14.x]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Back
     steps:
       - uses: actions/checkout@v1
         with:
           persist-credentials: false
+          working-directory: ./Back
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
