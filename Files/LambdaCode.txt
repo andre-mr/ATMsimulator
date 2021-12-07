@@ -28,7 +28,7 @@ exports.handler = async (event) => {
                 payload = formatDeposit(event);
                 response = await dynamodb.put(payload).promise();
                 if (response){
-                    return responseMessages.SuccessDeposit;
+                    return responseMessages.Success;
                 }else{
                     return responseMessages.OperationFailed;
                 }
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
                 payload = formatWithdrawal(event);
                 response = await dynamodb.put(payload).promise();
                 if (response){
-                    return responseMessages.SuccessWithdrawal;
+                    return responseMessages.Success;
                 }else{
                     return responseMessages.OperationFailed;
                 }
