@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          working-directory: ../Back
+          working-directory: '../Back'
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -27,6 +27,7 @@ jobs:
       - name: zip
         uses: montudor/action-zip@v0.1.0
         with:
+          working-directory: '../Back'
           args: zip -qq -r ./bundle.zip ./
       - name: default deploy
         uses: appleboy/lambda-action@master
