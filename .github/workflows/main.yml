@@ -24,9 +24,10 @@ jobs:
         env:
           CI: true
       - name: zip
-        uses: montudor/action-zip@v0.1.0
+        uses: montudor/action-zip@v0.1.0          
         with:
-          args: zip -q -j bundle.zip Back/*
+          run: cd ./Back
+          args: zip -q -j ../bundle.zip .
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
