@@ -7,6 +7,9 @@ jobs:
       matrix:
         node-version: [14.x]
     runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: ./Back
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,7 +29,6 @@ jobs:
       - name: zip
         uses: montudor/action-zip@v0.1.0
         with:
-          path: './Back'
           args: zip -qq -r ../bundle.zip .
       - name: default deploy
         uses: appleboy/lambda-action@master
