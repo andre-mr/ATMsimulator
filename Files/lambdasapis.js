@@ -17,7 +17,7 @@ var withdrawal =
     "Operation": "Withdrawal",
     "Account": "1001",
     "Password": "abc123",
-    "Value": 10
+    "Value": 50
 }
 
 var transfer =
@@ -26,7 +26,7 @@ var transfer =
     "Account": "1001",
     "Password": "abc123",
     "Destiny": "1002",
-    "Value": 20,
+    "Value": 50
 }
 
 var statement =
@@ -34,7 +34,7 @@ var statement =
     "Operation": "Statement",
     "Account": "1001",
     "Password": "abc123",
-    "Period": "202111"
+    "Period": "2021-11"
 }
 
 var model =
