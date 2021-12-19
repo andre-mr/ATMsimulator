@@ -37,7 +37,7 @@ var callAPI = (Account, Password) => {
     // add content type header to object
     // myHeaders.append("Content-Type", "application/json");
     myHeaders.set("Content-Type", "application/json")
-    // myHeaders.append("Access-Control-Allow-Origin", "*");
+    myHeaders.append("Access-Control-Allow-Origin", "*");
     // myHeaders.append("Request-Mode", "no-cors");
     // using built in JSON utility package turn object to string and store in a variable
     var raw = JSON.stringify(
