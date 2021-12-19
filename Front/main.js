@@ -37,7 +37,7 @@ var callAPI = (Account, Password) => {
     // add content type header to object
     myHeaders.append("Content-Type", "application/json");
     // using built in JSON utility package turn object to string and store in a variable
-    var raw = JSON.stringify({ "Operation": login, "Account": Account, "Password": Password });
+    var raw = JSON.stringify({ "Operation": "Login", "Account": Account, "Password": Password });
     // create a JSON object with parameters for API call and store in a variable
     var requestOptions = {
         method: 'POST',
