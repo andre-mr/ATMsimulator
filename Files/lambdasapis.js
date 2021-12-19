@@ -1,3 +1,16 @@
+var login =
+{
+    "Operation": "Login",
+    "Account": "1001",
+    "Password": "abc123"
+}
+
+var check =
+{
+    "Operation": "Check",
+    "Account": "1001"
+}
+
 var balance =
 {
     "Operation": "Balance",

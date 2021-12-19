@@ -12,6 +12,30 @@ exports.handler = async (event) => {
     const operation = event.Operation;
 
     switch (operation) {
+        
+        case 'Login':
+            account = await validateLogin(event);
+            if (account) {
+                let message = responseMessages.SuccessLogin;
+                message.body.Account.Name = account.Name;
+                message.body.Account.Balance = account.Balance;
+                message.body.Account.Account = event.Account;
+                return message;
+            } else {
+                return responseMessages.LoginFailed;
+            }
+            
+        case 'Check':
+            account = await validateAccount(event);
+            if (account && account.Active) {
+                let message = responseMessages.SuccessCheck;
+                message.body.Account.Name = account.Name;
+                message.body.Account.Account = event.Account;
+                return message;
+            } else {
+                return responseMessages.InvalidAccount;
+            }
+        
         case 'Balance':
             account = await validateLogin(event);
             if (account) {
@@ -303,6 +327,33 @@ const updateAccountBalance = async (item) => {
 }
 
 const responseMessages = {
+    SuccessLogin: {
+        "statusCode": 200,
+        "headers": {
+            "content-type": "application/json"
+        },
+        "body": {
+            "Message": "Success!",
+            "Account": {
+                "Account": "",
+                "Name": "",
+                "Balance": ""
+            }
+        }
+    },
+    SuccessCheck: {
+        "statusCode": 200,
+        "headers": {
+            "content-type": "application/json"
+        },
+        "body": {
+            "Message": "Success!",
+            "Account": {
+                "Account": "",
+                "Name": ""
+            }
+        }
+    },
     SuccessDeposit: {
         "statusCode": 200,
         "headers": {

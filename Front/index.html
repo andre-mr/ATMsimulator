@@ -31,14 +31,17 @@
         </div>
 
         <div id="screenStart" class="d-flex content row bg-primary justify-content-center align-content-center">
-            <div class="h-50 row">
+            <div class="h-75 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Número da conta</h3>
-                        <input type="number" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="loginAccount" type="number"
+                            class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <h3 class="shadow-text my-auto fw-bold text-light text-center">Senha</h3>
+                        <input id="loginPassword" type="password"
+                            class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                     </div>
-                    <br>
-                    <button id="btnStartEnter"
+                    <button id="btnStartLogin"
                         class="fs-5 my-auto w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
                 </div>
             </div>
@@ -80,18 +83,21 @@
                     </div>
                     <br>
                     <button id="btnBalanceBack"
-                    class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                        class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
             </div>
         </div>
-        
+
         <div id="screenStatement" class="d-none content row bg-primary justify-content-center align-content-start">
             <div class="d-flex justify-content-around mt-5">
                 <button id="btnStatementLeft"
-                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center"><<</button>
-                    <div class="d-flex fs-2 justify-content-center align-items-center shadow-text fw-bold text-light text-center">01/2021</div>
-                <button id="btnStatementLeft"
-                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">>></button>
+                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">
+                    <<< /button>
+                        <div
+                            class="d-flex fs-2 justify-content-center align-items-center shadow-text fw-bold text-light text-center">
+                            01/2021</div>
+                        <button id="btnStatementLeft"
+                            class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">>></button>
             </div>
             <div class="h-50 row flex-column">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
@@ -228,7 +234,21 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
+    <!-- project scripts -->
     <script src='main.js'></script>
+
+    <!-- aws api gateway scripts -->
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
 </body>
 
 </html>
