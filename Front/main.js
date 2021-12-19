@@ -35,18 +35,9 @@ var callAPI = (Account, Password) => {
     // instantiate a headers object
     var myHeaders = new Headers();
     // add content type header to object
-    // myHeaders.append("Content-Type", "application/json");
-    myHeaders.set("Content-Type", "application/json")
-    myHeaders.append("Access-Control-Allow-Origin", "*");
-    // myHeaders.append("Request-Mode", "no-cors");
+    myHeaders.append("Content-Type", "application/json");
     // using built in JSON utility package turn object to string and store in a variable
-    var raw = JSON.stringify(
-        {
-            "Operation": "Login",
-            "Account": Account,
-            "Password": Password
-        }
-    );
+    var raw = JSON.stringify({ "Operation": login, "Account": Account, "Password": Password });
     // create a JSON object with parameters for API call and store in a variable
     var requestOptions = {
         method: 'POST',
@@ -60,6 +51,7 @@ var callAPI = (Account, Password) => {
         .then(result => alert(JSON.parse(result).body))
         .catch(error => console.log('error', error));
 }
+
 
 function hideScreens() {
     document.getElementById("screenStart").className = document.getElementById("screenHome").className.replace("d-flex", "d-none");
