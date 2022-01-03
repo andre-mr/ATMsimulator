@@ -26,3 +26,6 @@ Front/lib/CryptoJS/rollups/sha256.js
 Front/lib/url-template/url-template.js
 Front/apigClient.js
 Files/LambdaCode.txt
+Files/index.html
+.gitignore
+Files/index.zip

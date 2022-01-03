@@ -1,3 +1,7 @@
+/* 
+Notice: web app (back and front) under development
+ */
+
 const AWS = require('aws-sdk');
 let dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -5,7 +9,6 @@ const Table = "ATMsimulator";
 let date, now, payload, account, response;
 
 exports.handler = async (event) => {
-
 
     date = new Date();
     now = date.toISOString();
@@ -333,7 +336,7 @@ const responseMessages = {
             "content-type": "application/json"
         },
         "body": {
-            "Message": "Success!",
+            "Success": true,
             "Account": {
                 "Account": "",
                 "Name": "",
@@ -347,7 +350,7 @@ const responseMessages = {
             "content-type": "application/json"
         },
         "body": {
-            "Message": "Success!",
+            "Success": true,
             "Account": {
                 "Account": "",
                 "Name": ""
@@ -359,14 +362,18 @@ const responseMessages = {
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Success!"
+        "body": {
+            "Success": true,
+            }
     },
     SuccessWithdrawal: {
         "statusCode": 200,
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Success!"
+        "body": {
+            "Success": true,
+            }
     },
     SuccessBalance: {
         "statusCode": 200,
@@ -374,7 +381,7 @@ const responseMessages = {
             "content-type": "application/json"
         },
         "body": {
-            "Message": "Success!",
+            "Success": true,
             "Account": ""
         }
     },
@@ -384,7 +391,7 @@ const responseMessages = {
             "content-type": "application/json"
         },
         "body": {
-            "Message": "Success!",
+            "Success": true,
             "Name": ""
         }
     },
@@ -394,7 +401,7 @@ const responseMessages = {
             "content-type": "application/json"
         },
         "body": {
-            "Message": "Success!",
+            "Success": true,
             "Statement": ""
         }
     },
@@ -403,27 +410,35 @@ const responseMessages = {
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Login Failed!"
+        "body": {
+            "Success": false,
+        }
     },
     InvalidAccount: {
         "statusCode": 400,
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Invalid account!"
+        "body": {
+            "Success": false,
+        }
     },
     OperationFailed: {
         "statusCode": 400,
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Operation failed!"
+        "body": {
+            "Success": false,
+        }
     },
     InsufficientFunds: {
         "statusCode": 400,
         "headers": {
             "content-type": "application/json"
         },
-        "body": "Insufficient Funds!"
+        "body": {
+            "Success": false,
+        }
     }
 }

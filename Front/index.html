@@ -35,13 +35,13 @@
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Número da conta</h3>
-                        <input id="loginAccount" type="number"
+                        <input id="inputLoginAccount" type="number" value="" autocomplete="off"
                             class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Senha</h3>
-                        <input id="loginPassword" type="password"
+                        <input id="inputLoginPassword" type="password" value="" autocomplete="off"
                             class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                     </div>
-                    <button id="btnStartLogin"
+                    <button data-bs-target="#alertModal" id="btnStartLogin"
                         class="fs-5 my-auto w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
                 </div>
             </div>
@@ -74,11 +74,10 @@
                         class="col d-flex w-75 bg-light shadow rounded flex-column justify-content-center align-items-center">
                         <div class="d-flex flex-column my-auto">
                             <h3 class="my-auto fw-bold text-dark text-center">Saldo em</h3>
-                            <h3 class="my-auto fw-bold text-dark text-center">01/01/2021</h3>
+                            <h3 id="balanceDate" class="my-auto fw-bold text-dark text-center">...</h3>
                         </div>
                         <div class="d-flex my-auto fw-bold text-success flex-row">
-                            <h1 class="my-auto fw-bold">R$&nbsp;</h1>
-                            <h1 class="my-auto fw-bold">100,00</h1>
+                            <h1 id="balanceValue" class="my-auto fw-bold">...</h1>
                         </div>
                     </div>
                     <br>
@@ -92,12 +91,12 @@
             <div class="d-flex justify-content-around mt-5">
                 <button id="btnStatementLeft"
                     class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">
-                    <<< /button>
-                        <div
-                            class="d-flex fs-2 justify-content-center align-items-center shadow-text fw-bold text-light text-center">
-                            01/2021</div>
-                        <button id="btnStatementLeft"
-                            class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">>></button>
+                </button>
+                <div
+                    class="d-flex fs-2 justify-content-center align-items-center shadow-text fw-bold text-light text-center">
+                    01/2021</div>
+                <button id="btnStatementLeft"
+                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">>></button>
             </div>
             <div class="h-50 row flex-column">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
@@ -182,12 +181,12 @@
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column">
                         <h3 class="shadow-text fw-bold text-light text-center">Número da conta</h3>
-                        <input type="number" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input type="number" value="" autocomplete="off" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                         <h3 class="shadow-text fw-bold text-light text-center">Valor da transferência</h3>
-                        <input type="number" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input type="number" value="" autocomplete="off" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                     </div>
                     <br>
-                    <button id="btnWithdrawalConfirm"
+                    <button id="btnTransferConfirm"
                         class="fs-5 mb-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
                     <button id="btnWithdrawalBack"
                         class="btnBack mt-2 fs-5 w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
@@ -200,7 +199,7 @@
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do saque</h3>
-                        <input type="number" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="inputWithdrawalValue" value="" autocomplete="off" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                     </div>
                     <br>
                     <button id="btnWithdrawalConfirm"
@@ -216,7 +215,7 @@
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do depósito</h3>
-                        <input type="number" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="inputDepositValue" value="" autocomplete="off" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
                     </div>
                     <br>
                     <button id="btnDepositConfirm"
@@ -229,6 +228,24 @@
 
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Aviso!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="alertModalText" class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button id="alertModalButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
@@ -236,19 +253,6 @@
 
     <!-- project scripts -->
     <script src='main.js'></script>
-
-    <!-- aws api gateway scripts -->
-    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
-    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
-    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
-    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
-    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
-    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
-    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
-    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
-    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
-    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
-    <script type="text/javascript" src="apigClient.js"></script>
 </body>
 
 </html>
