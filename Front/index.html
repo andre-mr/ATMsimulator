@@ -31,18 +31,18 @@
         </div>
 
         <div id="screenStart" class="d-flex content row bg-primary justify-content-center align-content-center">
-            <div class="h-75 row">
+            <div class="h-50 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div class="d-flex flex-column my-auto">
+                    <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Número da conta</h3>
                         <input id="inputLoginAccount" type="number" value="" autocomplete="off"
-                            class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Senha</h3>
                         <input id="inputLoginPassword" type="password" value="" autocomplete="off"
-                            class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
                     </div>
                     <button data-bs-target="#alertModal" id="btnStartLogin"
-                        class="fs-5 my-auto w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
+                        class="fs-5 my-auto mt-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
                 </div>
             </div>
         </div>
@@ -176,19 +176,40 @@
             </div>
         </div>
 
-        <div id="screenTransfer" class="d-none content row bg-primary justify-content-center align-content-center">
-            <div class="h-50 row">
-                <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div class="d-flex flex-column">
-                        <h3 class="shadow-text fw-bold text-light text-center">Número da conta</h3>
-                        <input type="number" value="" autocomplete="off" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+        <div id="screenTransfer" class="d-none mt-0 content row bg-primary justify-content-center align-content-center">
+            <div id="screenTransferFill" class="d-none h-75 row mt-0 justify-content-center align-content-center">
+                <div class="col d-flex mt-2 flex-column align-items-center">
+                    <div class="d-flex flex-column my-auto align-items-center">
+                        <h3 class="shadow-text mt-4 fw-bold text-light text-center">Número da conta</h3>
+                        <input id="inputTransferAccount" value="" autocomplete="off"
+                            class="w-75 rounded-pill p-1 m-5 mt-3 text-center fw-bold fs-3">
                         <h3 class="shadow-text fw-bold text-light text-center">Valor da transferência</h3>
-                        <input type="number" value="" autocomplete="off" class="mt-0 mb-3 w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="inputTransferValue" value="" autocomplete="off"
+                            class="w-75 rounded-pill p-1 m-5 mt-3 mb-5 text-center fw-bold fs-3">
+                    </div>
+                    <br>
+                    <button id="btnTransferConfirmation"
+                        class="fs-5 mb-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                    <button id="btnTransferBack"
+                        class="btnBack mt-2 fs-5 w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                </div>
+            </div>
+            <div id="screenTransferConfirmation"
+                class="d-flex h-75 row mt-5 justify-content-center align-content-center">
+                <div class="col d-flex mt-5 flex-column align-items-center">
+                    <div
+                        class="col d-flex w-75 mb-5 bg-light shadow rounded flex-column justify-content-center align-items-center">
+                        <h4 class="shadow-text fw-bold text-black text-center">Nome</h4>
+                        <h3 id="transferConfirmationName" class="shadow-text fw-bold text-success text-center">...</h3>
+                        <br>
+                        <h4 class="shadow-text fw-bold text-black text-center">Valor da transferência</h4>
+                        <h3 id="transferConfirmationValue" class="shadow-text fw-bold text-success text-center">0,00
+                        </h3>
                     </div>
                     <br>
                     <button id="btnTransferConfirm"
-                        class="fs-5 mb-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
-                    <button id="btnWithdrawalBack"
+                        class="fs-5 mb-2 mt-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                    <button id="btnTransferConfirmBack"
                         class="btnBack mt-2 fs-5 w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
             </div>
@@ -197,13 +218,14 @@
         <div id="screenWithdrawal" class="d-none content row bg-primary justify-content-center align-content-center">
             <div class="h-50 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div class="d-flex flex-column my-auto">
+                    <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do saque</h3>
-                        <input id="inputWithdrawalValue" value="" autocomplete="off" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="inputWithdrawalValue" value="" autocomplete="off"
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
                     </div>
                     <br>
                     <button id="btnWithdrawalConfirm"
-                        class="fs-5 my-auto w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
                     <button id="btnWithdrawalBack"
                         class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
@@ -213,13 +235,14 @@
         <div id="screenDeposit" class="d-none content row bg-primary justify-content-center align-content-center">
             <div class="h-50 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div class="d-flex flex-column my-auto">
+                    <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do depósito</h3>
-                        <input id="inputDepositValue" value="" autocomplete="off" class="w-75 rounded-pill p-1 m-5 text-center fw-bold fs-3">
+                        <input id="inputDepositValue" value="" autocomplete="off"
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
                     </div>
                     <br>
                     <button id="btnDepositConfirm"
-                        class="fs-5 my-auto w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
                     <button id="btnDepositBack"
                         class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
@@ -240,7 +263,8 @@
                     ...
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button id="alertModalButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    <button id="alertModalButton" type="button" class="btn btn-primary"
+                        data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>

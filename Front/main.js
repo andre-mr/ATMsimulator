@@ -11,6 +11,11 @@ const balanceDate = document.getElementById('balanceDate');
 const balanceValue = document.getElementById('balanceValue');
 const inputDepositValue = document.getElementById('inputDepositValue');
 const inputWithdrawalValue = document.getElementById('inputWithdrawalValue');
+const inputTransferAccount = document.getElementById('inputTransferAccount');
+const inputTransferValue = document.getElementById('inputTransferValue');
+const transferConfirmationName = document.getElementById('transferConfirmationName');
+const transferConfirmationValue = document.getElementById('transferConfirmationValue');
+
 const alertModal = new bootstrap.Modal(document.getElementById('alertModal'),)
 let currentAccountNumber, currentAccountPassword;
 
@@ -43,6 +48,13 @@ function startup() {
         document.getElementById('alertModalButton').focus();
     });
 
+    document.getElementById('btnHomeTransfer').addEventListener('click', choiceTransfer, false);
+    document.getElementById('inputTransferAccount').addEventListener('keyup', transferConfirmation, false);
+    document.getElementById('inputTransferValue').addEventListener('keyup', transferConfirmation, false);
+    document.getElementById('btnTransferConfirmation').addEventListener('click', transferConfirmation, false);
+    document.getElementById('btnTransferConfirm').addEventListener('click', transferConfirm, false);
+    document.getElementById('btnTransferConfirmBack').addEventListener('click', transferConfirmBack, false);
+
     inputDepositValue.addEventListener('keyup', function (evt) {
         if (evt.key == 'Enter') {
             return;
@@ -55,7 +67,6 @@ function startup() {
             let lastChar = this.value.charAt(this.value.length - 1);
             this.value = this.value.substring(0, this.value.length - 1);
             let integerPart = this.value.substring(0, this.value.indexOf(','));
-            // let decimalPart = this.value.substring(this.value.indexOf(',') + 1, this.value.length);
             this.value = integerPart + lastChar;
         }
         if (this.value.length > 0) {
@@ -79,11 +90,30 @@ function startup() {
             let lastChar = this.value.charAt(this.value.length - 1);
             this.value = this.value.substring(0, this.value.length - 1);
             let integerPart = this.value.substring(0, this.value.indexOf(','));
-            // let decimalPart = this.value.substring(this.value.indexOf(',') + 1, this.value.length);
             this.value = integerPart + lastChar;
         }
-        else {
-            //
+        if (this.value.length > 0) {
+            let n = parseInt(this.value.replace(/\D/g, ''), 10);
+            this.value = n.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+        }
+    }, false);
+
+    inputTransferValue.addEventListener('keyup', function (evt) {
+        if (evt.key == 'Enter') {
+            return;
+        }
+        if (evt.key == 'Backspace') {
+            if (this.value.length > 0) {
+                this.value = this.value.substring(0, this.value.indexOf(',') - 1);
+            }
+        } else if (this.value.length > 1) {
+            let lastChar = this.value.charAt(this.value.length - 1);
+            this.value = this.value.substring(0, this.value.length - 1);
+            let integerPart = this.value.substring(0, this.value.indexOf(','));
+            this.value = integerPart + lastChar;
         }
         if (this.value.length > 0) {
             let n = parseInt(this.value.replace(/\D/g, ''), 10);
@@ -95,7 +125,9 @@ function startup() {
     }, false);
 
     for (e of document.getElementsByClassName('btnBack')) {
-        e.addEventListener('click', showHome, false);
+        if (e.id !== 'btnTransferConfirmBack') {
+            e.addEventListener('click', showHome, false);
+        }
     }
 
     headerAccount.innerHTML = '---';
@@ -217,7 +249,12 @@ function choiceStatement() {
 
 function choiceTransfer() {
     hideScreens();
+    inputTransferAccount.value = '';
+    inputTransferValue.value = '';
+    document.getElementById('screenTransferFill').className = document.getElementById('screenTransferFill').className.replace('d-none', 'd-flex');
+    document.getElementById('screenTransferConfirmation').className = document.getElementById('screenTransferConfirmation').className.replace('d-flex', 'd-none');
     showScreen('screenTransfer');
+    inputTransferAccount.focus();
 }
 
 function choiceWithdrawal() {
@@ -237,7 +274,7 @@ function choiceDeposit() {
 async function depositConfirm(e) {
     if (e && (e.key == '.' || e.key == ',' || e.keyCode == 188 || e.keyCode == 190)) {
         inputDepositValue.value = '';
-        alertModalText.innerHTML = 'Somente valores inteiros.';
+        alertModalText.innerHTML = 'Somente valores inteiros maiores que 0.';
         alertModal.show();
         return;
     }
@@ -250,8 +287,13 @@ async function depositConfirm(e) {
             let requestModel = Operations.Deposit;
             requestModel.Account = currentAccountNumber;
             requestModel.Value = parseInt(inputDepositValue.value.replaceAll('.', '').replaceAll(',00', ''));
+            if (requestModel.Value <= 0) {
+                inputDepositValue.value = '';
+                inputDepositValue.focus();
+                return
+            }
             let depositResponse = await callAPI(requestModel);
-            if (depositResponse) {
+            if (depositResponse && depositResponse.Success) {
                 inputDepositValue.value = '';
                 alertModalText.innerHTML = 'Depósito realizado.';
                 alertModal.show();
@@ -276,7 +318,7 @@ async function depositConfirm(e) {
 async function withdrawalConfirm(e) {
     if (e && (e.key == '.' || e.key == ',' || e.keyCode == 188 || e.keyCode == 190)) {
         inputDepositValue.value = '';
-        alertModalText.innerHTML = 'Somente valores inteiros.';
+        alertModalText.innerHTML = 'Somente valores inteiros maiores que 0.';
         alertModal.show();
         return;
     }
@@ -290,6 +332,11 @@ async function withdrawalConfirm(e) {
             requestModel.Account = currentAccountNumber;
             requestModel.Password = currentAccountPassword;
             requestModel.Value = parseInt(inputWithdrawalValue.value.replaceAll('.', '').replaceAll(',00', ''));
+            if (requestModel.Value <= 0) {
+                inputWithdrawalValue.value = '';
+                inputWithdrawalValue.focus();
+                return
+            }
             let withdrawalResponse = await callAPI(requestModel);
             if (withdrawalResponse && withdrawalResponse.Success) {
                 inputWithdrawalValue.value = '';
@@ -311,6 +358,107 @@ async function withdrawalConfirm(e) {
             }
         }
     }
+}
+
+async function transferConfirmation(e) {
+    if (e && (e.key == '.' || e.key == ',' || e.keyCode == 188 || e.keyCode == 190)) {
+        if (e.target.id == inputTransferAccount.id) {
+            alertModalText.innerHTML = 'Somente valores inteiros maiores que 0.';
+            alertModal.show();
+            document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+                inputTransferAccount.value = '';
+                inputTransferAccount.focus();
+                this.removeEventListener('hidden.bs.modal', handler);
+            });
+        } else {
+            alertModalText.innerHTML = 'Somente valores inteiros.';
+            alertModal.show();
+            document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+                inputTransferValue.value = '';
+                inputTransferValue.focus();
+                this.removeEventListener('hidden.bs.modal', handler);
+            });
+        }
+        return;
+    }
+    if (e && e.key && (e.key !== 'Enter' && e.keyCode !== 13)) {
+        return;
+    } else {
+        if (!inputTransferAccount.value) {
+            inputTransferAccount.focus();
+        } else if (!inputTransferValue.value) {
+            inputTransferValue.focus();
+        }
+        else {
+            let requestModel = Operations.Check;
+            requestModel.Account = inputTransferAccount.value;
+            let transferValue = parseInt(inputTransferValue.value.replaceAll('.', '').replaceAll(',00', ''));
+            if (transferValue <= 0) {
+                inputTransferValue.value = '';
+                inputTransferValue.focus();
+                return;
+            }
+            let checkResponse = await callAPI(requestModel);
+            if (checkResponse && checkResponse.Success && (checkResponse.Account.Account != currentAccountNumber)) {
+                transferConfirmationName.innerHTML = checkResponse.Account.Name;
+                transferConfirmationValue.innerHTML = inputTransferValue.value;
+                document.getElementById('screenTransferFill').className = document.getElementById('screenTransferFill').className.replace('d-flex', 'd-none');
+                document.getElementById('screenTransferConfirmation').className = document.getElementById('screenTransferConfirmation').className.replace('d-none', 'd-flex');
+            } else {
+                alertModalText.innerHTML = 'Verifique a conta informada.';
+                alertModal.show();
+                document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+                    inputTransferAccount.value = '';
+                    inputTransferValue.value = '';
+                    inputTransferAccount.focus();
+                    this.removeEventListener('hidden.bs.modal', handler);
+                });
+            }
+        }
+    }
+}
+
+async function transferConfirm(e) {
+    let requestModel = Operations.Transfer;
+    requestModel.Account = currentAccountNumber;
+    requestModel.Password = currentAccountPassword;
+    requestModel.Destiny = inputTransferAccount.value;
+    requestModel.Value = parseInt(inputTransferValue.value.replaceAll('.', '').replaceAll(',00', ''));
+    let transferResponse = await callAPI(requestModel);
+    if (transferResponse && transferResponse.Success) {
+        inputTransferAccount.value = '';
+        inputTransferValue.value = '';
+        alertModalText.innerHTML = 'Transferência realizada.';
+        alertModal.show();
+        document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+            inputTransferAccount.value = '';
+            inputTransferValue.value = '';
+            inputTransferAccount.focus();
+            document.getElementById('screenTransferFill').className = document.getElementById('screenTransferFill').className.replace('d-none', 'd-flex');
+            document.getElementById('screenTransferConfirmation').className = document.getElementById('screenTransferConfirmation').className.replace('d-flex', 'd-none');
+            this.removeEventListener('hidden.bs.modal', handler);
+        });
+    } else {
+        alertModalText.innerHTML = 'Saldo insuficiente.';
+        alertModal.show();
+        document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+            inputTransferAccount.value = '';
+            inputTransferValue.value = '';
+            inputTransferAccount.focus();
+            this.removeEventListener('hidden.bs.modal', handler);
+        });
+    }
+}
+
+async function transferConfirmBack(e) {
+    transferConfirmationName.innerHTML = '';
+    transferConfirmationValue.innerHTML = '';
+    inputTransferAccount.value = '';
+    inputTransferValue.value = '';
+    document.getElementById('screenTransferFill').className = document.getElementById('screenTransferFill').className.replace('d-none', 'd-flex');
+    document.getElementById('screenTransferConfirmation').className = document.getElementById('screenTransferConfirmation').className.replace('d-flex', 'd-none');
+    showScreen('screenTransfer');
+    inputTransferAccount.focus();
 }
 
 // api request models accepted
