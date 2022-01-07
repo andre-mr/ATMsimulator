@@ -9,3 +9,15 @@
 .listBox {
     max-height: 75%;
 }
+
+/* @media (max-aspect-ratio: 1/1) {
+    .responsiveContainer {
+        width: 100%;
+    }
+}
+
+@media (min-aspect-ratio: 1/1) {
+    .responsiveContainer {
+        width: 75%;
+    }
+} */

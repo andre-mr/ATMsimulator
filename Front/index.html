@@ -31,7 +31,7 @@
         </div>
 
         <div id="screenStart" class="d-flex content row bg-primary justify-content-center align-content-center">
-            <div class="h-50 row">
+            <div class="row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Número da conta</h3>
@@ -40,9 +40,9 @@
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Senha</h3>
                         <input id="inputLoginPassword" type="password" value="" autocomplete="off"
                             class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
+                        <button data-bs-target="#alertModal" id="btnStartLogin"
+                            class="w-75 fs-5 my-auto mt-2 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
                     </div>
-                    <button data-bs-target="#alertModal" id="btnStartLogin"
-                        class="fs-5 my-auto mt-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">ENTRAR</button>
                 </div>
             </div>
         </div>
@@ -50,39 +50,45 @@
         <div id="screenHome" class="d-none content row bg-primary justify-content-center align-content-center">
             <div class="h-75 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <button id="btnHomeBalance"
-                        class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">SALDO</button>
-                    <button id="btnHomeStatement"
-                        class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">EXTRATO</button>
-                    <button id="btnHomeTransfer"
-                        class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">TRANSFERÊNCIA</button>
-                    <button id="btnHomeWithdrawal"
-                        class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">SAQUE</button>
-                    <button id="btnHomeDeposit"
-                        class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">DEPÓSITO</button>
-                    <br>
-                    <button id="btnHomeEnd"
-                        class="fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">ENCERRAR</button>
+                    <div class="d-flex h-100 flex-column align-items-center">
+                        <button id="btnHomeBalance"
+                            class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">SALDO</button>
+                        <button id="btnHomeStatement"
+                            class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">EXTRATO</button>
+                        <button id="btnHomeTransfer"
+                            class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">TRANSFERÊNCIA</button>
+                        <button id="btnHomeWithdrawal"
+                            class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">SAQUE</button>
+                        <button id="btnHomeDeposit"
+                            class="fs-5 my-auto w-75 btn btn-light rounded-pill shadow fw-bold text-dark text-center">DEPÓSITO</button>
+                        <input value="" autocomplete="off"
+                            class="opacity-0 w-75 rounded-pill mx-5 text-center fw-bold fs-3">
+                        <button id="btnHomeEnd"
+                            class="fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">ENCERRAR</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="screenBalance" class="d-none content row bg-primary justify-content-center align-content-center">
             <div class="h-50 row">
-                <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div
-                        class="col d-flex w-75 bg-light shadow rounded flex-column justify-content-center align-items-center">
-                        <div class="d-flex flex-column my-auto">
-                            <h3 class="my-auto fw-bold text-dark text-center">Saldo em</h3>
-                            <h3 id="balanceDate" class="my-auto fw-bold text-dark text-center">...</h3>
+                <div class="col d-flex h-100 flex-column justify-content-center align-items-center">
+                    <div class="d-flex h-100 flex-column align-items-center">
+                        <div
+                            class="col d-flex w-75 h-100 bg-light shadow rounded flex-column justify-content-center align-items-center">
+                            <div class="d-flex flex-column my-auto">
+                                <h3 class="my-auto fw-bold text-dark text-center">Saldo em</h3>
+                                <h3 id="balanceDate" class="my-auto fw-bold text-dark text-center">...</h3>
+                            </div>
+                            <div class="d-flex my-auto fw-bold text-success flex-row">
+                                <h1 id="balanceValue" class="my-auto fw-bold">...</h1>
+                            </div>
                         </div>
-                        <div class="d-flex my-auto fw-bold text-success flex-row">
-                            <h1 id="balanceValue" class="my-auto fw-bold">...</h1>
-                        </div>
+                        <input value="" autocomplete="off"
+                            class="opacity-0 w-75 rounded-pill mx-5 text-center fw-bold fs-3">
+                        <button id="btnBalanceBack"
+                            class="btnBack fs-5 w-75 my-auto btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                     </div>
-                    <br>
-                    <button id="btnBalanceBack"
-                        class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
             </div>
         </div>
@@ -90,161 +96,156 @@
         <div id="screenStatement" class="d-none content row bg-primary justify-content-center align-content-start">
             <div class="d-flex justify-content-around mt-5">
                 <button id="btnStatementLeft"
-                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">
-                </button>
-                <div
+                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">&lt&lt</button>
+                <div id="statementPeriod"
                     class="d-flex fs-2 justify-content-center align-items-center shadow-text fw-bold text-light text-center">
                     01/2021</div>
-                <button id="btnStatementLeft"
-                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">>></button>
+                <button id="btnStatementRight"
+                    class="fs-5 w-25 btn btn-light rounded-pill shadow fw-bold text-dark text-center">&gt&gt</button>
             </div>
-            <div class="h-50 row flex-column">
-                <div class="col d-flex flex-column justify-content-center align-items-center">
-                    <div class="d-flex listBox mb-0 flex-column my-auto w-100">
-                        <ul class="list-group overflow-auto w-100 d-flex justify-content-between">
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Depósito</div>
+            <div class="h-75 row flex-column">
+                <div class="col d-flex h-100 flex-column justify-content-center align-items-center">
+                    <div class="d-flex h-100 bg-light listBox mb-0 rounded flex-column my-auto w-100">
+                        <ul id="statementList"
+                            class="d-flex list-group overflow-auto h-100 w-100 justify-content-start">
+                            <li id="statementListItemDeposit"
+                                class="d-none row justify-content-between align-items-start border border-2 my-0 m-0">
+                                <div class="d-flex fs-5 column justify-content-between">
+                                    <p class="fw-bold text-black mx-0 my-0">Depósito</p>
+                                    <p class="statementValue fw-bold text-success mx-0 my-0">100,00</p>
                                 </div>
-                                <span class="badge fs-6 text-success rounded">100,00</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="fw-normal text-black ms-2 me-2 my-0">Data:</p>
+                                    <p class="statementDate fw-normal text-secondary mx-1 my-0">07/01/2022 - 12:00:00
+                                    </p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Depósito</div>
+                            <li id="statementListItemWithdrawal"
+                                class="d-none row justify-content-between align-items-start border border-2 my-0 m-0">
+                                <div class="d-flex fs-5 column justify-content-between">
+                                    <p class="fw-bold text-black mx-0 my-0">Saque</p>
+                                    <p class="statementValue fw-bold text-danger mx-0 my-0">100,00</p>
                                 </div>
-                                <span class="badge fs-6 text-success rounded">1000,00</span>
-                            </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Transferência</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="fw-normal text-black ms-2 me-2 my-0">Data:</p>
+                                    <p class="statementDate fw-normal text-secondary mx-1 my-0">07/01/2022 - 12:00:00
+                                    </p>
                                 </div>
-                                <span class="badge fs-6 text-success rounded">50,00</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Transferência</div>
+                            <li id="statementListItemCredit"
+                                class="d-none row justify-content-between align-items-start border border-2 my-0 m-0">
+                                <div class="d-flex fs-5 column justify-content-between">
+                                    <p class="fw-bold text-black mx-0 my-0">Crédito</p>
+                                    <p class="statementValue fw-bold text-success mx-0 my-0">100,00</p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
-                            </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="w-normal text-black ms-2 me-2 my-0">Data:</p>
+                                    <p class="statementDate fw-normal text-secondary mx-1 my-0">07/01/2022 - 12:02:00
+                                    </p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
-                            </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="w-normal text-black ms-2 me-2 my-0">Origem:</p>
+                                    <p class="statementAccount fw-normal text-secondary mx-1 my-0">1002</p>
+                                    <p class="statementName fw-normal text-secondary mx-1 my-0">Beltrano de Tal</p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
                             </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                            <li id="statementListItemDebit"
+                                class="d-none row justify-content-between align-items-start border border-2 my-0 m-0">
+                                <div class="d-flex fs-5 column justify-content-between">
+                                    <p class="fw-bold text-black mx-0 my-0">Débito</p>
+                                    <p class="statementValue fw-bold text-danger mx-0 my-0">100,00</p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
-                            </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="w-normal text-black ms-2 me-2 my-0">Data:</p>
+                                    <p class="statementDate fw-normal text-secondary mx-1 my-0">07/01/2022 - 12:02:00
+                                    </p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
-                            </li>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Saque</div>
+                                <div class="d-flex column justify-content-start">
+                                    <p class="w-normal text-black ms-2 me-2 my-0">Destino:</p>
+                                    <p class="statementAccount fw-normal text-secondary mx-1 my-0">1002</p>
+                                    <p class="statementName fw-normal text-secondary mx-1 my-0">Beltrano de Tal</p>
                                 </div>
-                                <span class="badge fs-6 text-danger rounded">50,00</span>
                             </li>
                         </ul>
                     </div>
-                    <button id="btnBalanceBack"
-                        class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                    <div class="d-flex flex-column my-auto align-items-center">
+                        <input value="" autocomplete="off"
+                            class="opacity-0 w-75 h-25 rounded-pill mx-5 text-center fw-bold fs-3">
+                        <button id="btnBalanceBack"
+                            class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="screenTransfer" class="d-none mt-0 content row bg-primary justify-content-center align-content-center">
-            <div id="screenTransferFill" class="d-none h-75 row mt-0 justify-content-center align-content-center">
-                <div class="col d-flex mt-2 flex-column align-items-center">
-                    <div class="d-flex flex-column my-auto align-items-center">
-                        <h3 class="shadow-text mt-4 fw-bold text-light text-center">Número da conta</h3>
+        <div id="screenTransfer" class="d-none content row bg-primary justify-content-center align-content-center">
+            <div class="h-50 row">
+                <div class="col d-flex h-100 flex-column justify-content-center align-items-center">
+                    <div id="screenTransferFill" class="d-flex my-auto flex-column align-items-center">
+                        <h3 class="shadow-text my-auto fw-bold text-light text-center">Número da conta</h3>
                         <input id="inputTransferAccount" value="" autocomplete="off"
-                            class="w-75 rounded-pill p-1 m-5 mt-3 text-center fw-bold fs-3">
-                        <h3 class="shadow-text fw-bold text-light text-center">Valor da transferência</h3>
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
+                        <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor da transferência</h3>
                         <input id="inputTransferValue" value="" autocomplete="off"
-                            class="w-75 rounded-pill p-1 m-5 mt-3 mb-5 text-center fw-bold fs-3">
-                    </div>
-                    <br>
-                    <button id="btnTransferConfirmation"
-                        class="fs-5 mb-2 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
-                    <button id="btnTransferBack"
-                        class="btnBack mt-2 fs-5 w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
-                </div>
-            </div>
-            <div id="screenTransferConfirmation"
-                class="d-flex h-75 row mt-5 justify-content-center align-content-center">
-                <div class="col d-flex mt-5 flex-column align-items-center">
-                    <div
-                        class="col d-flex w-75 mb-5 bg-light shadow rounded flex-column justify-content-center align-items-center">
-                        <h4 class="shadow-text fw-bold text-black text-center">Nome</h4>
-                        <h3 id="transferConfirmationName" class="shadow-text fw-bold text-success text-center">...</h3>
+                            class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
                         <br>
-                        <h4 class="shadow-text fw-bold text-black text-center">Valor da transferência</h4>
-                        <h3 id="transferConfirmationValue" class="shadow-text fw-bold text-success text-center">0,00
-                        </h3>
+                        <button id="btnTransferConfirmation"
+                            class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        <button id="btnTransferBack"
+                            class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                     </div>
-                    <br>
-                    <button id="btnTransferConfirm"
-                        class="fs-5 mb-2 mt-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
-                    <button id="btnTransferConfirmBack"
-                        class="btnBack mt-2 fs-5 w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                    <div id="screenTransferConfirmation" class="d-none my-auto flex-column align-items-center">
+                        <div
+                            class="col d-flex w-75 h-100 bg-light shadow rounded flex-column justify-content-center align-items-center">
+                            <h4 class="shadow-text fw-bold text-black text-center">Nome</h4>
+                            <h3 id="transferConfirmationName" class="shadow-text fw-bold text-success text-center">...
+                            </h3>
+                            <br>
+                            <h4 class="shadow-text fw-bold text-black text-center">Valor da transferência</h4>
+                            <h3 id="transferConfirmationValue" class="shadow-text fw-bold text-success text-center">0,00
+                            </h3>
+                        </div>
+                        <input value="" autocomplete="off"
+                            class="opacity-0 w-75 rounded-pill mx-5 text-center fw-bold fs-3">
+                        <button id="btnTransferConfirm"
+                            class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        <button id="btnTransferConfirmBack"
+                            class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="screenWithdrawal" class="d-none content row bg-primary justify-content-center align-content-center">
-            <div class="h-50 row">
+            <div class="responsiveContainer h-50 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do saque</h3>
                         <input id="inputWithdrawalValue" value="" autocomplete="off"
                             class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
+                        <br>
+                        <button id="btnWithdrawalConfirm"
+                            class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        <button id="btnWithdrawalBack"
+                            class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                     </div>
-                    <br>
-                    <button id="btnWithdrawalConfirm"
-                        class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
-                    <button id="btnWithdrawalBack"
-                        class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
             </div>
         </div>
 
         <div id="screenDeposit" class="d-none content row bg-primary justify-content-center align-content-center">
-            <div class="h-50 row">
+            <div class="responsiveContainer h-50 row">
                 <div class="col d-flex flex-column justify-content-center align-items-center">
                     <div class="d-flex flex-column my-auto align-items-center">
                         <h3 class="shadow-text my-auto fw-bold text-light text-center">Valor do depósito</h3>
                         <input id="inputDepositValue" value="" autocomplete="off"
                             class="w-75 rounded-pill p-1 m-5 mt-4 text-center fw-bold fs-3">
+                        <br>
+                        <button id="btnDepositConfirm"
+                            class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
+                        <button id="btnDepositBack"
+                            class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                     </div>
-                    <br>
-                    <button id="btnDepositConfirm"
-                        class="fs-5 my-auto mb-3 w-75 btn btn-success rounded-pill shadow fw-bold text-light text-center">CONFIRMAR</button>
-                    <button id="btnDepositBack"
-                        class="btnBack fs-5 my-auto w-75 btn btn-warning rounded-pill shadow fw-bold text-dark text-center">VOLTAR</button>
                 </div>
             </div>
         </div>

@@ -15,9 +15,21 @@ const inputTransferAccount = document.getElementById('inputTransferAccount');
 const inputTransferValue = document.getElementById('inputTransferValue');
 const transferConfirmationName = document.getElementById('transferConfirmationName');
 const transferConfirmationValue = document.getElementById('transferConfirmationValue');
+const statementPeriod = document.getElementById('statementPeriod');
+
+const statementList = document.getElementById('statementList');
 
 const alertModal = new bootstrap.Modal(document.getElementById('alertModal'),)
 let currentAccountNumber, currentAccountPassword;
+let currentPeriod = new Date();
+
+const statementListItens = {
+    statementListItemDeposit: document.getElementById('statementListItemDeposit').cloneNode(true),
+    statementListItemWithdrawal: document.getElementById('statementListItemWithdrawal').cloneNode(true),
+    statementListItemCredit: document.getElementById('statementListItemCredit').cloneNode(true),
+    statementListItemDebit: document.getElementById('statementListItemDebit').cloneNode(true)
+}
+statementListItens.textContent = '';
 
 window.addEventListener('load', () => {
     startup();
@@ -54,6 +66,9 @@ function startup() {
     document.getElementById('btnTransferConfirmation').addEventListener('click', transferConfirmation, false);
     document.getElementById('btnTransferConfirm').addEventListener('click', transferConfirm, false);
     document.getElementById('btnTransferConfirmBack').addEventListener('click', transferConfirmBack, false);
+
+    document.getElementById('btnStatementLeft').addEventListener('click', statementPeriodChangeLeft, false);
+    document.getElementById('btnStatementRight').addEventListener('click', statementPeriodChangeRight, false);
 
     inputDepositValue.addEventListener('keyup', function (evt) {
         if (evt.key == 'Enter') {
@@ -136,7 +151,7 @@ function startup() {
 
 // call api gateway
 const callAPI = (requestParameters) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let defaultHeader = new Headers();
         defaultHeader.append('Content-Type', 'application/json');
         let requestJSON = JSON.stringify(requestParameters);
@@ -242,9 +257,128 @@ async function choiceBalance() {
     showScreen('screenBalance');
 }
 
-function choiceStatement() {
+async function choiceStatement() {
     hideScreens();
+    statementList.textContent = '';
     showScreen('screenStatement');
+    let requestModel = Operations.Statement;
+    requestModel.Account = currentAccountNumber;
+    requestModel.Password = currentAccountPassword;
+    currentPeriod = new Date();
+    requestModel.Period = `${currentPeriod.getFullYear()}-${(currentPeriod.getMonth() + 1).toString().padStart(2, '0')}`;
+    let statementResponse = await callAPI(requestModel);
+    if (statementResponse && statementResponse.Success) {
+        statementList.scrollTo(0, 0);
+        statementList.textContent = '';
+        for (const item of statementResponse.Statement) {
+            if (item.Type == 'Debit') {
+                newListItem = statementListItens.statementListItemDebit.cloneNode(true);
+                newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
+                newListItem.querySelector('p.statementName').innerHTML = item.Name;
+            } else if (item.Type == 'Credit') {
+                newListItem = statementListItens.statementListItemCredit.cloneNode(true);
+                newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
+                newListItem.querySelector('p.statementName').innerHTML = item.Name;
+            } else if (item.Type == 'Withdrawal') {
+                newListItem = statementListItens.statementListItemWithdrawal.cloneNode(true);
+            } else {
+                newListItem = statementListItens.statementListItemDeposit.cloneNode(true);
+            }
+            newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            let newDate = new Date(item.Date);
+            newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
+            newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
+            statementList.appendChild(newListItem);
+        }
+    }
+    statementPeriod.innerHTML = requestModel.Period.substring(5, 7) + '/' + requestModel.Period.substring(0, 4);
+}
+
+async function statementPeriodChangeLeft() {
+    await statementPeriodChange(false);
+}
+
+async function statementPeriodChangeRight() {
+    await statementPeriodChange(true);
+}
+
+async function statementPeriodChange(next) {
+    let targetPeriod = new Date();
+    targetPeriod.setFullYear(currentPeriod.getFullYear());
+    targetPeriod.setMonth(currentPeriod.getMonth());
+    if (next) { // next period, right button
+        let today = new Date();
+        if (targetPeriod.getFullYear() < today.getFullYear()) {
+            if (targetPeriod.getMonth() < 11) {
+                targetPeriod.setMonth(targetPeriod.getMonth() + 1);
+            } else {
+                targetPeriod.setFullYear(targetPeriod.getFullYear() + 1);
+                targetPeriod.setMonth(0);
+            }
+        } else if (targetPeriod.getMonth() < today.getMonth()) {
+            targetPeriod.setMonth(targetPeriod.getMonth() + 1);
+        } else {
+            alertModalText.innerHTML = 'Última página.';
+            alertModal.show();
+            document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+                inputDepositValue.value = '';
+                inputDepositValue.focus();
+                this.removeEventListener('hidden.bs.modal', handler);
+            });
+        }
+    } else { // last period, left button
+        if (targetPeriod.getMonth() > 0) {
+            targetPeriod.setMonth(targetPeriod.getMonth() - 1);
+        } else {
+            targetPeriod.setFullYear(targetPeriod.getFullYear() - 1);
+            targetPeriod.setMonth(11);
+        }
+    }
+
+    let requestModel = Operations.Statement;
+    requestModel.Account = currentAccountNumber;
+    requestModel.Password = currentAccountPassword;
+    requestModel.Period = `${targetPeriod.getFullYear()}-${(targetPeriod.getMonth() + 1).toString().padStart(2, '0')}`;
+    let statementResponse = await callAPI(requestModel);
+    if (statementResponse && statementResponse.Success) {
+        statementList.textContent = '';
+        for (const item of statementResponse.Statement) {
+            if (item.Type == 'Debit') {
+                newListItem = statementListItens.statementListItemDebit.cloneNode(true);
+                newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
+                newListItem.querySelector('p.statementName').innerHTML = item.Name;
+            } else if (item.Type == 'Credit') {
+                newListItem = statementListItens.statementListItemCredit.cloneNode(true);
+                newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
+                newListItem.querySelector('p.statementName').innerHTML = item.Name;
+            } else if (item.Type == 'Withdrawal') {
+                newListItem = statementListItens.statementListItemWithdrawal.cloneNode(true);
+            } else {
+                newListItem = statementListItens.statementListItemDeposit.cloneNode(true);
+            }
+            newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            let newDate = new Date(item.Date);
+            newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
+            newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
+            statementList.appendChild(newListItem);
+        }
+        statementPeriod.innerHTML = requestModel.Period.substring(5, 7) + '/' + requestModel.Period.substring(0, 4);
+        currentPeriod = targetPeriod;
+    } else {
+        alertModalText.innerHTML = 'Última página.';
+        alertModal.show();
+        document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+            inputDepositValue.value = '';
+            inputDepositValue.focus();
+            this.removeEventListener('hidden.bs.modal', handler);
+        });
+    }
 }
 
 function choiceTransfer() {

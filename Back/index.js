@@ -139,6 +139,22 @@ exports.handler = async (event) => {
                 if (result.Items.length > 0) {
                     response = responseMessages.SuccessStatement;
                     response.body.Statement = result.Items;
+                    for (let i=0; i < response.body.Statement.length; i++){
+                        let itemTemp = {};
+                        itemTemp.Date = response.body.Statement[i].SK.replace(/ACCOUNT#[0-9]{4}#/, '');
+                        itemTemp.Type = response.body.Statement[i].Type;
+                        itemTemp.Value = response.body.Statement[i].Value;
+                        if (response.body.Statement[i].Name){
+                            itemTemp.Name = response.body.Statement[i].Name;
+                        }
+                        if (response.body.Statement[i].Origin){
+                            itemTemp.Origin = response.body.Statement[i].Origin;
+                        }
+                        if (response.body.Statement[i].Destiny){
+                            itemTemp.Destiny = response.body.Statement[i].Destiny;
+                        }
+                        response.body.Statement[i] = itemTemp;
+                    }
                     return response;
                 } else {
                     return responseMessages.OperationFailed;
