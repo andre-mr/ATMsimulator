@@ -15,7 +15,7 @@ exports.handler = async (event) => {
     const operation = event.Operation;
 
     switch (operation) {
-        
+
         case 'Login':
             account = await validateLogin(event);
             if (account) {
@@ -23,11 +23,12 @@ exports.handler = async (event) => {
                 message.body.Account.Name = account.Name;
                 message.body.Account.Balance = account.Balance;
                 message.body.Account.Account = event.Account;
+                message.body.Account.Creation = account.Creation;
                 return message;
             } else {
                 return responseMessages.LoginFailed;
             }
-            
+
         case 'Check':
             account = await validateAccount(event);
             if (account && account.Active) {
@@ -38,7 +39,7 @@ exports.handler = async (event) => {
             } else {
                 return responseMessages.InvalidAccount;
             }
-        
+
         case 'Balance':
             account = await validateLogin(event);
             if (account) {
@@ -135,28 +136,28 @@ exports.handler = async (event) => {
             account = await validateLogin(event);
             if (account) {
                 payload = formatStatement(event);
-                let result = await dynamodb.query(payload).promise();
-                if (result.Items.length > 0) {
+                try {
+                    let result = await dynamodb.query(payload).promise();
                     response = responseMessages.SuccessStatement;
                     response.body.Statement = result.Items;
-                    for (let i=0; i < response.body.Statement.length; i++){
+                    for (let i = 0; i < response.body.Statement.length; i++) {
                         let itemTemp = {};
                         itemTemp.Date = response.body.Statement[i].SK.replace(/ACCOUNT#[0-9]{4}#/, '');
                         itemTemp.Type = response.body.Statement[i].Type;
                         itemTemp.Value = response.body.Statement[i].Value;
-                        if (response.body.Statement[i].Name){
+                        if (response.body.Statement[i].Name) {
                             itemTemp.Name = response.body.Statement[i].Name;
                         }
-                        if (response.body.Statement[i].Origin){
+                        if (response.body.Statement[i].Origin) {
                             itemTemp.Origin = response.body.Statement[i].Origin;
                         }
-                        if (response.body.Statement[i].Destiny){
+                        if (response.body.Statement[i].Destiny) {
                             itemTemp.Destiny = response.body.Statement[i].Destiny;
                         }
                         response.body.Statement[i] = itemTemp;
                     }
                     return response;
-                } else {
+                } catch (error) {
                     return responseMessages.OperationFailed;
                 }
             } else {
@@ -356,7 +357,8 @@ const responseMessages = {
             "Account": {
                 "Account": "",
                 "Name": "",
-                "Balance": ""
+                "Balance": "",
+                "Creation": ""
             }
         }
     },
@@ -380,7 +382,7 @@ const responseMessages = {
         },
         "body": {
             "Success": true,
-            }
+        }
     },
     SuccessWithdrawal: {
         "statusCode": 200,
@@ -389,7 +391,7 @@ const responseMessages = {
         },
         "body": {
             "Success": true,
-            }
+        }
     },
     SuccessBalance: {
         "statusCode": 200,

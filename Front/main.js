@@ -20,16 +20,19 @@ const statementPeriod = document.getElementById('statementPeriod');
 const statementList = document.getElementById('statementList');
 
 const alertModal = new bootstrap.Modal(document.getElementById('alertModal'),)
-let currentAccountNumber, currentAccountPassword;
+const currentAccount = {
+    AccountNumber: '', AccountPassword: '', AccountCreation: ''
+}
 let currentPeriod = new Date();
 
-const statementListItens = {
+const statementListItems = {
+    statementListItemEmpty: document.getElementById('statementListItemEmtpy').cloneNode(true),
     statementListItemDeposit: document.getElementById('statementListItemDeposit').cloneNode(true),
     statementListItemWithdrawal: document.getElementById('statementListItemWithdrawal').cloneNode(true),
     statementListItemCredit: document.getElementById('statementListItemCredit').cloneNode(true),
     statementListItemDebit: document.getElementById('statementListItemDebit').cloneNode(true)
 }
-statementListItens.textContent = '';
+statementListItems.textContent = '';
 
 window.addEventListener('load', () => {
     startup();
@@ -203,12 +206,18 @@ async function enterAccount(e) {
             let requestModel = Operations.Login;
             requestModel.Account = inputLoginAccount.value ? inputLoginAccount.value.toString() : '0000';
             requestModel.Password = inputLoginPassword.value ? inputLoginPassword.value.toString() : '0000';
-            // requestModel.Account = '1001'; // testing
-            // requestModel.Password = 'fulano'; // testing
             let loginResponse = await callAPI(requestModel);
             if (loginResponse && loginResponse.Account) {
-                currentAccountNumber = requestModel.Account;
-                currentAccountPassword = requestModel.Password; // change for security after development
+                currentAccount.AccountNumber = requestModel.Account;
+                currentAccount.AccountPassword = requestModel.Password; // change approach for better security after development
+                let formattedCreationDate = loginResponse.Account.Creation.substring(0, 4)
+                    + '-' + loginResponse.Account.Creation.substring(4, 6)
+                    + '-' + loginResponse.Account.Creation.substring(6, 8)
+                    + 'T' + loginResponse.Account.Creation.substring(9, 11)
+                    + ':' + loginResponse.Account.Creation.substring(11, 13)
+                    + ':' + loginResponse.Account.Creation.substring(13, 15)
+                    + 'Z';
+                currentAccount.AccountCreation = new Date(formattedCreationDate);
                 headerAccount.innerHTML = loginResponse.Account.Account;
                 headerName.innerHTML = loginResponse.Account.Name;
                 inputLoginAccount.value = '';
@@ -230,7 +239,7 @@ async function enterAccount(e) {
 
 function exitAccount() {
     showScreen('screenStart');
-    currentAccountNumber = undefined;
+    currentAccount.AccountNumber = undefined;
     headerAccount.innerHTML = '---';
     headerName.innerHTML = '---';
     inputLoginAccount.focus();
@@ -239,8 +248,8 @@ function exitAccount() {
 async function choiceBalance() {
     hideScreens();
     let requestModel = Operations.Balance;
-    requestModel.Account = currentAccountNumber;
-    requestModel.Password = currentAccountPassword;
+    requestModel.Account = currentAccount.AccountNumber;
+    requestModel.Password = currentAccount.AccountPassword;
     let loginResponse = await callAPI(requestModel);
     if (loginResponse && loginResponse.Account) {
         balanceDate.innerHTML = new Date().toLocaleDateString();
@@ -262,39 +271,44 @@ async function choiceStatement() {
     statementList.textContent = '';
     showScreen('screenStatement');
     let requestModel = Operations.Statement;
-    requestModel.Account = currentAccountNumber;
-    requestModel.Password = currentAccountPassword;
+    requestModel.Account = currentAccount.AccountNumber;
+    requestModel.Password = currentAccount.AccountPassword;
     currentPeriod = new Date();
     requestModel.Period = `${currentPeriod.getFullYear()}-${(currentPeriod.getMonth() + 1).toString().padStart(2, '0')}`;
+    statementPeriod.innerHTML = requestModel.Period.substring(5, 7) + '/' + requestModel.Period.substring(0, 4);
     let statementResponse = await callAPI(requestModel);
     if (statementResponse && statementResponse.Success) {
         statementList.scrollTo(0, 0);
-        statementList.textContent = '';
-        for (const item of statementResponse.Statement) {
-            if (item.Type == 'Debit') {
-                newListItem = statementListItens.statementListItemDebit.cloneNode(true);
-                newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
-                newListItem.querySelector('p.statementName').innerHTML = item.Name;
-            } else if (item.Type == 'Credit') {
-                newListItem = statementListItens.statementListItemCredit.cloneNode(true);
-                newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
-                newListItem.querySelector('p.statementName').innerHTML = item.Name;
-            } else if (item.Type == 'Withdrawal') {
-                newListItem = statementListItens.statementListItemWithdrawal.cloneNode(true);
-            } else {
-                newListItem = statementListItens.statementListItemDeposit.cloneNode(true);
-            }
-            newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
-            let newDate = new Date(item.Date);
-            newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
+        if (statementResponse.Statement.length <= 0) {
+            newListItem = statementListItems.statementListItemEmpty.cloneNode(true);
             newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
             statementList.appendChild(newListItem);
+        } else {
+            for (const item of statementResponse.Statement) {
+                if (item.Type == 'Debit') {
+                    newListItem = statementListItems.statementListItemDebit.cloneNode(true);
+                    newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
+                    newListItem.querySelector('p.statementName').innerHTML = item.Name;
+                } else if (item.Type == 'Credit') {
+                    newListItem = statementListItems.statementListItemCredit.cloneNode(true);
+                    newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
+                    newListItem.querySelector('p.statementName').innerHTML = item.Name;
+                } else if (item.Type == 'Withdrawal') {
+                    newListItem = statementListItems.statementListItemWithdrawal.cloneNode(true);
+                } else {
+                    newListItem = statementListItems.statementListItemDeposit.cloneNode(true);
+                }
+                newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+                let newDate = new Date(item.Date);
+                newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
+                newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
+                statementList.appendChild(newListItem);
+            }
         }
     }
-    statementPeriod.innerHTML = requestModel.Period.substring(5, 7) + '/' + requestModel.Period.substring(0, 4);
 }
 
 async function statementPeriodChangeLeft() {
@@ -307,10 +321,10 @@ async function statementPeriodChangeRight() {
 
 async function statementPeriodChange(next) {
     let targetPeriod = new Date();
+    let today = new Date();
     targetPeriod.setFullYear(currentPeriod.getFullYear());
     targetPeriod.setMonth(currentPeriod.getMonth());
     if (next) { // next period, right button
-        let today = new Date();
         if (targetPeriod.getFullYear() < today.getFullYear()) {
             if (targetPeriod.getMonth() < 11) {
                 targetPeriod.setMonth(targetPeriod.getMonth() + 1);
@@ -321,16 +335,22 @@ async function statementPeriodChange(next) {
         } else if (targetPeriod.getMonth() < today.getMonth()) {
             targetPeriod.setMonth(targetPeriod.getMonth() + 1);
         } else {
+            targetPeriod = null;
             alertModalText.innerHTML = 'Última página.';
             alertModal.show();
             document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
-                inputDepositValue.value = '';
-                inputDepositValue.focus();
                 this.removeEventListener('hidden.bs.modal', handler);
             });
         }
     } else { // last period, left button
-        if (targetPeriod.getMonth() > 0) {
+        if (targetPeriod < currentAccount.AccountCreation) {
+            targetPeriod = null;
+            alertModalText.innerHTML = 'Última página.';
+            alertModal.show();
+            document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
+                this.removeEventListener('hidden.bs.modal', handler);
+            });
+        } else if (targetPeriod.getMonth() > 0) {
             targetPeriod.setMonth(targetPeriod.getMonth() - 1);
         } else {
             targetPeriod.setFullYear(targetPeriod.getFullYear() - 1);
@@ -338,46 +358,47 @@ async function statementPeriodChange(next) {
         }
     }
 
-    let requestModel = Operations.Statement;
-    requestModel.Account = currentAccountNumber;
-    requestModel.Password = currentAccountPassword;
-    requestModel.Period = `${targetPeriod.getFullYear()}-${(targetPeriod.getMonth() + 1).toString().padStart(2, '0')}`;
-    let statementResponse = await callAPI(requestModel);
-    if (statementResponse && statementResponse.Success) {
+    if (targetPeriod) {
+        let requestModel = Operations.Statement;
+        requestModel.Account = currentAccount.AccountNumber;
+        requestModel.Password = currentAccount.AccountPassword;
+        requestModel.Period = `${targetPeriod.getFullYear()}-${(targetPeriod.getMonth() + 1).toString().padStart(2, '0')}`;
         statementList.textContent = '';
-        for (const item of statementResponse.Statement) {
-            if (item.Type == 'Debit') {
-                newListItem = statementListItens.statementListItemDebit.cloneNode(true);
-                newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
-                newListItem.querySelector('p.statementName').innerHTML = item.Name;
-            } else if (item.Type == 'Credit') {
-                newListItem = statementListItens.statementListItemCredit.cloneNode(true);
-                newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
-                newListItem.querySelector('p.statementName').innerHTML = item.Name;
-            } else if (item.Type == 'Withdrawal') {
-                newListItem = statementListItens.statementListItemWithdrawal.cloneNode(true);
-            } else {
-                newListItem = statementListItens.statementListItemDeposit.cloneNode(true);
-            }
-            newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
-            let newDate = new Date(item.Date);
-            newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
-            newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
-            statementList.appendChild(newListItem);
-        }
         statementPeriod.innerHTML = requestModel.Period.substring(5, 7) + '/' + requestModel.Period.substring(0, 4);
         currentPeriod = targetPeriod;
-    } else {
-        alertModalText.innerHTML = 'Última página.';
-        alertModal.show();
-        document.getElementById('alertModal').addEventListener('hidden.bs.modal', function handler() {
-            inputDepositValue.value = '';
-            inputDepositValue.focus();
-            this.removeEventListener('hidden.bs.modal', handler);
-        });
+        let statementResponse = await callAPI(requestModel);
+        if (statementResponse && statementResponse.Success) {
+
+            if (statementResponse.Statement.length <= 0) {
+                newListItem = statementListItems.statementListItemEmpty.cloneNode(true);
+                newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
+                statementList.appendChild(newListItem);
+            } else {
+                for (const item of statementResponse.Statement) {
+                    if (item.Type == 'Debit') {
+                        newListItem = statementListItems.statementListItemDebit.cloneNode(true);
+                        newListItem.querySelector('p.statementAccount').innerHTML = item.Destiny;
+                        newListItem.querySelector('p.statementName').innerHTML = item.Name;
+                    } else if (item.Type == 'Credit') {
+                        newListItem = statementListItems.statementListItemCredit.cloneNode(true);
+                        newListItem.querySelector('p.statementAccount').innerHTML = item.Origin;
+                        newListItem.querySelector('p.statementName').innerHTML = item.Name;
+                    } else if (item.Type == 'Withdrawal') {
+                        newListItem = statementListItems.statementListItemWithdrawal.cloneNode(true);
+                    } else {
+                        newListItem = statementListItems.statementListItemDeposit.cloneNode(true);
+                    }
+                    newListItem.querySelector('p.statementValue').innerHTML = item.Value.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    });
+                    let newDate = new Date(item.Date);
+                    newListItem.querySelector('p.statementDate').innerHTML = newDate.toLocaleString('pt-BR');
+                    newListItem.className = newListItem.className.replace(/d-none/, 'd-flex');
+                    statementList.appendChild(newListItem);
+                }
+            }
+        }
     }
 }
 
@@ -419,7 +440,7 @@ async function depositConfirm(e) {
             inputDepositValue.focus();
         } else {
             let requestModel = Operations.Deposit;
-            requestModel.Account = currentAccountNumber;
+            requestModel.Account = currentAccount.AccountNumber;
             requestModel.Value = parseInt(inputDepositValue.value.replaceAll('.', '').replaceAll(',00', ''));
             if (requestModel.Value <= 0) {
                 inputDepositValue.value = '';
@@ -463,8 +484,8 @@ async function withdrawalConfirm(e) {
             inputWithdrawalValue.focus();
         } else {
             let requestModel = Operations.Withdrawal;
-            requestModel.Account = currentAccountNumber;
-            requestModel.Password = currentAccountPassword;
+            requestModel.Account = currentAccount.AccountNumber;
+            requestModel.Password = currentAccount.AccountPassword;
             requestModel.Value = parseInt(inputWithdrawalValue.value.replaceAll('.', '').replaceAll(',00', ''));
             if (requestModel.Value <= 0) {
                 inputWithdrawalValue.value = '';
@@ -533,7 +554,7 @@ async function transferConfirmation(e) {
                 return;
             }
             let checkResponse = await callAPI(requestModel);
-            if (checkResponse && checkResponse.Success && (checkResponse.Account.Account != currentAccountNumber)) {
+            if (checkResponse && checkResponse.Success && (checkResponse.Account.Account != currentAccount.AccountNumber)) {
                 transferConfirmationName.innerHTML = checkResponse.Account.Name;
                 transferConfirmationValue.innerHTML = inputTransferValue.value;
                 document.getElementById('screenTransferFill').className = document.getElementById('screenTransferFill').className.replace('d-flex', 'd-none');
@@ -554,8 +575,8 @@ async function transferConfirmation(e) {
 
 async function transferConfirm(e) {
     let requestModel = Operations.Transfer;
-    requestModel.Account = currentAccountNumber;
-    requestModel.Password = currentAccountPassword;
+    requestModel.Account = currentAccount.AccountNumber;
+    requestModel.Password = currentAccount.AccountPassword;
     requestModel.Destiny = inputTransferAccount.value;
     requestModel.Value = parseInt(inputTransferValue.value.replaceAll('.', '').replaceAll(',00', ''));
     let transferResponse = await callAPI(requestModel);
