@@ -2,7 +2,7 @@
 Um simulador de ATM simples para trabalhar com AWS e Bootstrap.
 
 <!-- LINK PUBLICADO -->
-:link: [Abra o projeto hospedado no AWS Amplify](https://main.d1cl7ueaoakjqp.amplifyapp.com/)
+:link: [Abra o projeto hospedado no AWS Amplify](https://atm.andremr.dev/)
 
 <!-- SOBRE -->
 ## :page_with_curl: Sobre o projeto
